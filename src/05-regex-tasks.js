@@ -52,7 +52,7 @@ function getRegexForGuid() {
  *
  */
 function getRegexForPitSpot() {
-  throw new Error('Not implemented');
+  return new RegExp(/^\w*p.t\w*$/);
 }
 
 /**
