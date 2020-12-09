@@ -169,8 +169,15 @@ function doRectanglesOverlap(rect1, rect2) {
  *   { center: { x:0, y:0 }, radius:10 },  { x:10, y:10 }   => false
  *
  */
-function isInsideCircle(/* circle, point */) {
-  throw new Error('Not implemented');
+function isInsideCircle(circle, point) {
+  const section = {
+    x: point.x - circle.center.x,
+    y: point.y - circle.center.y,
+  };
+
+  const distance = Math.sqrt(section.x ** 2 + section.y ** 2);
+
+  return circle.radius > distance;
 }
 
 /**
