@@ -475,8 +475,61 @@ function getMatrixProduct(m1, m2) {
  *    [    ,   ,    ]]
  *
  */
-function evaluateTicTacToePosition(/* position */) {
-  throw new Error('Not implemented');
+function evaluateTicTacToePosition(position) {
+  let winner = '';
+  const length = position.length - 1;
+  const diagonalElement = position[0][0];
+  const isDiagonalExists = diagonalElement !== undefined;
+  const invDiagonalElement = position[0][length];
+  const isInvDiagonalExists = invDiagonalElement !== undefined;
+  let countDiagonal = 0;
+  let countInvDiagonal = 0;
+
+  for (let i = 0; i < position.length; i += 1) {
+    const line = position[i];
+    const lineString = line.join('');
+    const diagonal = position[i][i];
+    const invDiagonal = position[i][length - i];
+    const current = position[0][i];
+    let countCurrent = 0;
+
+    if (lineString === 'XXX' || lineString === '000') {
+      [winner] = lineString;
+      break;
+    }
+
+    if (diagonal === diagonalElement && isDiagonalExists) {
+      countDiagonal += 1;
+    }
+
+    if (invDiagonal === invDiagonalElement && isInvDiagonalExists) {
+      countInvDiagonal += 1;
+    }
+
+    if (countDiagonal === 3) {
+      winner = diagonalElement;
+      break;
+    }
+
+    if (countInvDiagonal === 3) {
+      winner = invDiagonalElement;
+      break;
+    }
+
+    for (let j = 0; j < position.length; j += 1) {
+      const last = position[j][i];
+      if (last === current && last !== undefined) {
+        countCurrent += 1;
+      }
+    }
+
+    if (countCurrent === 3) {
+      winner = current;
+      break;
+    }
+  }
+
+  return winner || undefined;
 }
 
 module.exports = {
