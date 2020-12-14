@@ -111,32 +111,63 @@ function fromJSON(proto, json) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  result: '',
+
+  createObject(value, order) {
+    const object = Object.create(this);
+    object.result = `${this.result}${value}`;
+
+    if (order) {
+      object.order = order;
+      if (this.order > object.order) {
+        // prettier-ignore
+        throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+      }
+
+      // prettier-ignore
+      if (
+        this.order === object.order
+        && (object.order === 1 || object.order === 2 || object.order === 6)
+      ) {
+        // prettier-ignore
+        throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+      }
+    }
+
+    return object;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    return this.createObject(value, 1);
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    return this.createObject(`#${value}`, 2);
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    return this.createObject(`.${value}`, 3);
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    return this.createObject(`[${value}]`, 4);
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    return this.createObject(`:${value}`, 5);
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    return this.createObject(`::${value}`, 6);
+  },
+
+  combine(selector1, combinator, selector2) {
+    const value = `${selector1.result} ${combinator} ${selector2.result}`;
+    return this.createObject(value);
+  },
+
+  stringify() {
+    return this.result;
   },
 };
 
